@@ -1,9 +1,11 @@
-import re, requests
-from utils import WordData, Definition, RelatedWord
+import re
+import requests
+from wiktionaryparser.utils import WordData, Definition, RelatedWord
 from bs4 import BeautifulSoup
 from itertools import zip_longest
 from copy import copy
 from string import digits
+import mwparserfromhell
 
 PARTS_OF_SPEECH = [
     "noun", "verb", "adjective", "adverb", "determiner",
@@ -20,6 +22,7 @@ RELATIONS = [
     "coordinate terms",
 ]
 
+
 def is_subheading(child, parent):
     child_headings = child.split(".")
     parent_headings = parent.split(".")
@@ -30,19 +33,23 @@ def is_subheading(child, parent):
             return False
     return True
 
+
 class WiktionaryParser(object):
     def __init__(self):
         self.url = "https://en.wiktionary.org/wiki/{}?printable=yes"
         self.wiktionary_api_url = "https://en.wiktionary.org/w/api.php"
         self.soup = None
         self.session = requests.Session()
-        self.session.mount("http://", requests.adapters.HTTPAdapter(max_retries = 2))
-        self.session.mount("https://", requests.adapters.HTTPAdapter(max_retries = 2))
+        self.session.mount(
+            "http://", requests.adapters.HTTPAdapter(max_retries=2))
+        self.session.mount(
+            "https://", requests.adapters.HTTPAdapter(max_retries=2))
         self.language = 'english'
         self.current_word = None
         self.PARTS_OF_SPEECH = copy(PARTS_OF_SPEECH)
         self.RELATIONS = copy(RELATIONS)
-        self.INCLUDED_ITEMS = self.RELATIONS + self.PARTS_OF_SPEECH + ['etymology', 'pronunciation']
+        self.INCLUDED_ITEMS = self.RELATIONS + \
+            self.PARTS_OF_SPEECH + ['etymology', 'pronunciation']
 
     def include_part_of_speech(self, part_of_speech):
         part_of_speech = part_of_speech.lower()
@@ -74,7 +81,8 @@ class WiktionaryParser(object):
         return self.language
 
     def clean_html(self):
-        unwanted_classes = ['sister-wikipedia', 'thumb', 'reference', 'cited-source']
+        unwanted_classes = ['sister-wikipedia',
+                            'thumb', 'reference', 'cited-source']
         for tag in self.soup.find_all(True, {'class': unwanted_classes}):
             tag.extract()
 
@@ -102,7 +110,8 @@ class WiktionaryParser(object):
             return [('1', x.title(), x) for x in checklist if self.soup.find('span', {'id': x.title()})]
         for content_tag in contents:
             content_index = content_tag.find_previous().text
-            text_to_check = self.remove_digits(content_tag.text).strip().lower()
+            text_to_check = self.remove_digits(
+                content_tag.text).strip().lower()
             if text_to_check in checklist:
                 content_id = content_tag.parent['href'].replace('#', '')
                 id_list.append((content_index, content_id, text_to_check))
@@ -133,7 +142,8 @@ class WiktionaryParser(object):
         return json_obj_list
 
     def parse_pronunciations(self, word_contents):
-        pronunciation_id_list = self.get_id_list(word_contents, 'pronunciation')
+        pronunciation_id_list = self.get_id_list(
+            word_contents, 'pronunciation')
         pronunciation_list = []
         audio_links = []
         pronunciation_text = []
@@ -158,7 +168,8 @@ class WiktionaryParser(object):
                     nested_list_element.extract()
                 if list_element.text and not list_element.find('table', {'class': 'audiotable'}):
                     pronunciation_text.append(list_element.text.strip())
-            pronunciation_list.append((pronunciation_index, pronunciation_text, audio_links))
+            pronunciation_list.append(
+                (pronunciation_index, pronunciation_text, audio_links))
         return pronunciation_list
 
     def parse_definitions(self, word_contents):
@@ -194,7 +205,8 @@ class WiktionaryParser(object):
             examples = []
             while table and table.name == 'ol':
                 for element in table.find_all('dd'):
-                    example_text = re.sub(r'\([^)]*\)', '', element.text.strip())
+                    example_text = re.sub(
+                        r'\([^)]*\)', '', element.text.strip())
                     if example_text:
                         examples.append(example_text)
                     element.clear()
@@ -260,15 +272,18 @@ class WiktionaryParser(object):
                             def_obj.example_uses = examples
                     for related_word_index, related_words, relation_type in word_data['related']:
                         if related_word_index.startswith(definition_index):
-                            def_obj.related_words.append(RelatedWord(relation_type, related_words))
+                            def_obj.related_words.append(
+                                RelatedWord(relation_type, related_words))
                     data_obj.definition_list.append(def_obj)
             json_obj_list.append(data_obj.to_json())
         return json_obj_list
 
     def fetch(self, word, language=None, old_id=None):
         language = self.language if not language else language
-        response = self.session.get(self.url.format(word), params={'oldid': old_id})
-        self.soup = BeautifulSoup(response.text.replace('>\n<', '><'), 'html.parser')
+        response = self.session.get(
+            self.url.format(word), params={'oldid': old_id})
+        self.soup = BeautifulSoup(
+            response.text.replace('>\n<', '><'), 'html.parser')
         self.current_word = word
         self.clean_html()
         return self.get_word_data(language.lower())
@@ -287,3 +302,8 @@ class WiktionaryParser(object):
 
         return response.json()['parse']['wikitext']
 
+    def parse_wikitext(self, wikitext: str, word: str, language: str, ):
+        """Given a Wiktionary word definition page in MediaWiki markdown,
+        parse it and get the word definition.
+        """
+        pass
