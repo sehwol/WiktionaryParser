@@ -1,7 +1,6 @@
 from parameterized import parameterized
 import unittest
 import json
-from .context import WiktionaryParser
 from deepdiff import DeepDiff
 from typing import Dict
 
