@@ -1,11 +1,11 @@
-### Wiktionary Parser
+# Wiktionary Parser
 
 A python project which parses word content from Wiktionary in an easy to use JSON format.
 Right now, it parses etymologies, definitions, pronunciations, examples, audio links and related words.
 
 [![Downloads](http://pepy.tech/badge/wiktionaryparser)](http://pepy.tech/project/wiktionaryparser)
 
-#### JSON structure
+## JSON structure
 
 ```json
 [{
@@ -26,17 +26,17 @@ Right now, it parses etymologies, definitions, pronunciations, examples, audio l
 }]
 ```
 
-#### Installation
+## Installation
 
-##### Using pip 
+### Using pip 
 * run `pip install wiktionaryparser`
 
-##### From Source
+### From Source
 * Clone the repo or download the zip
 * `cd` to the folder
 * run `pip install -r "requirements.txt"`
 
-#### Usage
+## Usage
 
  - Import the WiktionaryParser class.
  - Initialize an object and use the `fetch("word", "language")` method.
@@ -44,7 +44,7 @@ Right now, it parses etymologies, definitions, pronunciations, examples, audio l
  - Include/exclude parts of speech to be parsed using `include_part_of_speech(part_of_speech)` and `exclude_part_of_speech(part_of_speech)`
  - Include/exclude relations to be parsed using `include_relation(relation)` and `exclude_relation(relation)`
 
-#### Examples
+### Examples
 
 ```python
 >>> from wiktionaryparser import WiktionaryParser
@@ -56,15 +56,15 @@ Right now, it parses etymologies, definitions, pronunciations, examples, audio l
 >>> parser.include_relation('alternative forms')
 ```
 
-#### Requirements
+## Requirements
 
  - requests==2.20.0
  - beautifulsoup4==4.4.0
 
-#### Contributions
+## Contributions
 
 If you want to add features/improvement or report issues, feel free to send a pull request!
 
-#### License
+## License
 
 Wiktionary Parser is licensed under [MIT](LICENSE.txt).
