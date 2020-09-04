@@ -1,8 +1,10 @@
-import unittest, json
+import unittest
+import json
 from .context import WiktionaryParser
 from deepdiff import DeepDiff
 
 parser = WiktionaryParser()
+
 
 class TestParser(unittest.TestCase):
     def test_multiple_languages(self):
@@ -21,7 +23,9 @@ class TestParser(unittest.TestCase):
             for word, old_id in words.items():
                 parsed_word = parser.fetch(word, old_id=old_id)
                 print("Testing \"{}\" in {}".format(word, lang))
-                self.assertEqual(DeepDiff(parsed_word, sample_output[lang][word], ignore_order=True), {})
+                self.assertEqual(
+                    DeepDiff(parsed_word, sample_output[lang][word], ignore_order=True), {})
+
 
 if __name__ == '__main__':
     unittest.main()
