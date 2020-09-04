@@ -33,6 +33,7 @@ def is_subheading(child, parent):
 class WiktionaryParser(object):
     def __init__(self):
         self.url = "https://en.wiktionary.org/wiki/{}?printable=yes"
+        self.wiktionary_api_url = "https://en.wiktionary.org/w/api.php"
         self.soup = None
         self.session = requests.Session()
         self.session.mount("http://", requests.adapters.HTTPAdapter(max_retries = 2))
@@ -271,3 +272,15 @@ class WiktionaryParser(object):
         self.current_word = word
         self.clean_html()
         return self.get_word_data(language.lower())
+
+    def fetch_wikitext(self, word: str) -> str:
+        response = self.session.get(self.wiktionary_api_url, params={
+            'action': 'parse',
+            'page': word,
+            'prop': 'wikitext',
+            'formatversion': 2,
+            'format': 'json'
+        })
+
+        return response.json()['parse']['wikitext']
+

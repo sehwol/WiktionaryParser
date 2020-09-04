@@ -17,6 +17,12 @@ class TestParser(unittest.TestCase):
 
         super(TestParser, self).__init__(*args, **kwargs)
 
+    def test_fetch_wikitext(self):
+        expected = "{{also|nööp|no-op}}\n==Dutch==\n\n===Pronunciation===\n* {{audio|nl|Nl-noop.ogg|Audio}}\n\n===Verb===\n{{head|nl|verb form}}\n\n# {{nl-verb form of|p=1|n=sg|t=pres|m=ind|nopen}}\n# {{nl-verb form of|m=imp|nopen}}"
+        result = parser.fetch_wikitext('noop')
+
+        self.assertEqual(expected, result)
+
     @parameterized.expand([
         ('grapple', 50080840),
         ('test', 50342756),
