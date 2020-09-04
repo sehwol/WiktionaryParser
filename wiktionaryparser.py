@@ -274,6 +274,9 @@ class WiktionaryParser(object):
         return self.get_word_data(language.lower())
 
     def fetch_wikitext(self, word: str) -> str:
+        """Call the Wiktionary API to get the MediaWiki markdown
+        of a word's definition page.
+        """
         response = self.session.get(self.wiktionary_api_url, params={
             'action': 'parse',
             'page': word,
