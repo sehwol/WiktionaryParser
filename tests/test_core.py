@@ -3,6 +3,7 @@ import unittest
 import json
 from deepdiff import DeepDiff
 from typing import Dict
+from wiktionaryparser import WiktionaryParser
 
 parser = WiktionaryParser()
 
