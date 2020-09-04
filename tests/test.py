@@ -32,13 +32,13 @@ class TestParser(unittest.TestCase):
         ('song', 50235564),
         ('house', 50356446),
     ])
-    def test_english_words(self, word: str, old_id: int):
+    def test_words_from_english(self, word: str, old_id: int):
         self.__test_word(word, old_id, 'English')
 
     @parameterized.expand([
         ('video', 50291344),
     ])
-    def test_latin_words(self, word: str, old_id: int):
+    def test_words_from_latin(self, word: str, old_id: int):
         self.__test_word(word, old_id, 'Latin')
 
     @parameterized.expand([
@@ -52,19 +52,19 @@ class TestParser(unittest.TestCase):
         ('pantergaupe', 46717478),
         ('maldivisk', 49859434),
     ])
-    def test_norwegian_bokmal_words(self, word: str, old_id: int):
+    def test_words_from_norwegian_bokmal(self, word: str, old_id: int):
         self.__test_word(word, old_id, 'Norwegian Bokmål')
 
     @parameterized.expand([
         ('house', 50356446)
     ])
-    def test_swedish_words(self, word: str, old_id: int):
+    def test_words_from_swedish(self, word: str, old_id: int):
         self.__test_word(word, old_id, 'Swedish')
 
     @parameterized.expand([
         ('ἀγγελία', 47719496)
     ])
-    def test_ancient_greek_words(self, word: str, old_id: int):
+    def test_words_from_ancient_greek(self, word: str, old_id: int):
         self.__test_word(word, old_id, 'Ancient Greek')
 
     def __test_words(self, words_and_ids: Dict[str, int], lang: str):
