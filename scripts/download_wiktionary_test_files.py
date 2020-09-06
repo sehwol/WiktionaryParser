@@ -40,14 +40,17 @@ def get_words_and_old_ids():
     return result
 
 
+def create_html_test_file_path(word: str, old_id: int) -> str:
+    return os.path.join(html_test_files_dir, f'{word}-{old_id}.html')
+
+
 def save_html_test_file(word: str,
                         old_id: int,
                         response: requests.Response):
     """Save the HTML of a word definition page."""
     print(f"Saving '{word}-{old_id}' HTML.")
 
-    filepath = os.path.join(html_test_files_dir,
-                            f'{word}-{old_id}.html')
+    filepath = create_html_test_file_path(word, old_id)
 
     write_file_and_dir(filepath, 'wb', response.content)
 
@@ -109,17 +112,22 @@ def create_markup_request(word: str,
                        })
 
 
+def check_test_html_has_been_download(word, old_id):
+    return os.path.isfile(create_html_test_file_path(word, old_id))
+
+
 def download_test_html_and_markup(words_and_old_ids: List[Set]):
     """Read an array of words and old_ids, then download from Wiktionary the
     HTML and WikiMedia markup for those words.
     """
     with FuturesSession() as session:
         futures = []
-    
+
         for word, old_id in words_and_old_ids:
-            futures.append(create_html_request(word,
-                                               old_id,
-                                               session))
+            if not check_test_html_has_been_download(word, old_id):
+                futures.append(create_html_request(word,
+                                                   old_id,
+                                                   session))
 
         as_completed(futures)
 
