@@ -3,7 +3,7 @@ import unittest
 import json
 from wiktionaryparser import WiktionaryParser
 from deepdiff import DeepDiff
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import mock
 from urllib import parse
 import os
@@ -38,8 +38,10 @@ test_words = [
 ]
 
 
-def get_test_words_table(*allowed_words):
-    """Convert the test_words array to an array of three element tuples."""
+def get_test_words_table(*allowed_words) -> List[Tuple[str, str, int]]:
+    """Convert the test_words array to an array of three element tuples, the
+    language, the word, and the old_id.
+    """
     result = []
 
     for word, old_id, languages in test_words:
